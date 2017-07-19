@@ -1,0 +1,9 @@
+请求接口本地配置的2中服务：
+
+json-server服务：
+  check-versions.js
+  dev-server-json-server.js 可改为 dev-server.js 运行起来
+
+
+express服务：
+dev-server.js
