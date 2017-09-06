@@ -63,37 +63,16 @@ app.use(hotMiddleware)
 var staticPath = path.posix.join(config.dev.assetsPublicPath, config.dev.assetsSubDirectory)
 app.use(staticPath, express.static('./static'))
 
+//////// json-server配置 ///////////
+const jsonServer = require('json-server')
+const apiServer = jsonServer.create()
+const apiRouter = jsonServer.router('./api/db.json')
+const middlewares = jsonServer.defaults()
 
-//////// express server配置 ///////////
-var apiServer = express()
-var bodyParser = require('body-parser')
-apiServer.use(bodyParser.urlencoded({ extended: true }))
-apiServer.use(bodyParser.json())
-var apiRouter = express.Router()
-var fs = require('fs')
-apiRouter.route('/:apiName')
-.all(function (req, res) {
-  fs.readFile('./api/db.json', 'utf8', function (err, data) {
-    if (err) throw err
-    var data = JSON.parse(data)
-    if (data[req.params.apiName]) {
-      res.json(data[req.params.apiName])  
-    }
-    else {
-      res.send('no such api name')
-    }
-    
-  })
-})
-
-apiServer.use('/api', apiRouter);
-
-apiServer.listen(port + 1, function (err) {
-  if (err) {
-    console.log(err)
-    return
-  }
-  console.log('Proxy Listening at http://localhost:' + (port + 1) + '\n')
+apiServer.use(middlewares)
+apiServer.use('/api', apiRouter) // 路由挂载到/api下
+apiServer.listen(port + 1, () => {
+  console.log('JSON Server is running...')
 })
 
 ///////////////////////////////////
